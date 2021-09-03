@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <title>Fuja Quadrado</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <style>
+        canvas {
+            border: solid 1px black;
+        }
+    </style>
+
+  </head>
+  <body>
+      <div>
+          <canvas id="game-area" width="500px" height="500px">
+              Seu navegador não suporta o elemento Canvas
+          </canvas>
+      </div>
+
+  </body>
+
+  <script>
+        let canvas = document.getElementById("game-area");
+        let ctx = canvas.getContext("2d");
+
+        let rect = {
+            x: 200,
+            y: 200,
+            width: 50,
+            heigth: 50,
+            velocidade: 5
+        }
+        let mouseRect = {
+            width: 50,
+            heigth: 50,
+        }
+
+        function desenhar(e) {
+            let desenharMouse = () => {
+                mouseRect.x = (e.clientX - canvas.offsetLeft) - mouseRect.width / 2;
+                mouseRect.y = (e.clientY - canvas.offsetTop) - mouseRect.heigth / 2;
+
+                // ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+                // ctx.fillRect(mouseRect.x, mouseRect.y, mouseRect.width, mouseRect.heigth);
+            }
+
+            let desenharRetengulo = () => {
+                ctx.fillStyle = "blue";
+                ctx.fillRect(rect.x, rect.y, rect.width, rect.heigth);
+            }
+
+            desenharRetengulo();
+            desenharMouse();   
+        }
+
+        function colidir() {           
+                if (
+                   mouseRect.x + mouseRect.width > rect.x &&
+                   mouseRect.x < rect.x + rect.width &&
+                   mouseRect.y + mouseRect.heigth > rect.y && 
+                   mouseRect.y < rect.y + rect.heigth 
+                ) 
+                {
+                    if (mouseRect.y < rect.y) {
+                        rect.y += rect.velocidade;
+                    }
+                    if (mouseRect.y > rect.y) {
+                        rect.y -= rect.velocidade;
+                    }
+                    if (mouseRect.x < rect.x) {
+                        rect.x += rect.velocidade;
+                    }
+                    if (mouseRect.x > rect.x) {
+                        rect.x -= rect.velocidade;
+                    }
+                }
+
+                if (rect.x + rect.width > canvas.width) {
+                    rect.x = canvas.width - rect.width;             
+                }
+                if (rect.x < 0) {
+                    rect.x = 0;
+                }
+                if (rect.y < 0) {
+                    rect.y = 0;
+                }
+                if (rect.y + rect.heigth > 500) {
+                    rect.y = 500 - rect.heigth;
+                }
+        }
+
+        function limparTela() {
+            ctx.clearRect(0, 0, 500, 500);
+        }
+
+        function atualizar(event) {
+            limparTela();    
+            colidir();
+            desenhar(event);
+        } 
+
+        canvas.addEventListener("mousemove", atualizar)
+  </script>
+
+</html>
